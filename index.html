@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Ledger Pulse - Accounting Software</title>
+<style>
+* { box-sizing: border-box; font-family: 'Segoe UI', sans-serif; }
+body { margin:0; background:#0f172a; color:#fff; }
+.header { background:#1e293b; padding:20px; text-align:center; }
+.header h1 { margin:0; font-size:28px; }
+.header p { color:#94a3b8; margin:5px 0 0; }
+.container { max-width:900px; margin:20px auto; padding:0 15px; }
+.cards { display:flex; gap:15px; flex-wrap:wrap; }
+.card { flex:1; min-width:200px; background:#1e293b; padding:20px; border-radius:12px; text-align:center; }
+.card h3 { margin:0; font-size:14px; color:#94a3b8; text-transform:uppercase; }
+.card h2 { margin:10px 0 0; font-size:28px; }
+.green { color:#22c55e; } .red { color:#ef4444; } .blue { color:#38bdf8; }
+.form { background:#1e293b; padding:20px; border-radius:12px; margin-top:20px; display:flex; gap:10px; flex-wrap:wrap; }
+input, select, button { padding:12px; border-radius:8px; border:none; font-size:15px; }
+input, select { flex:1; min-width:140px; background:#0f172a; color:#fff; border:1px solid #334155; outline:none; }
+button { background:#22c55e; color:#fff; font-weight:bold; cursor:pointer; flex:1; min-width:120px; }
+button:hover { background:#16a34a; }
+.list { margin-top:20px; }
+.item { background:#1e293b; padding:15px; border-radius:10px; display:flex; justify-content:space-between; align-items:center; margin-bottom:10px; }
+.item b { display:block; }
+.item small { color:#94a3b8; }
+.del { background:#ef4444; padding:8px 12px; border-radius:6px; cursor:pointer; border:none; color:#fff; }
+.search { width:100%; margin-top:20px; }
+.footer { text-align:center; color:#64748b; padding:20px; font-size:13px; }
+</style>
+</head>
+<body>
+<div class="header">
+  <h1>💰 Ledger Pulse</h1>
+  <p>Simple Accounting Software for Small Business</p>
+</div>
+<div class="container">
+  <div class="cards">
+    <div class="card"><h3>Total Balance</h3><h2 class="blue" id="balance">₦0</h2></div>
+    <div class="card"><h3>Total Income</h3><h2 class="green" id="income">₦0</h2></div>
+    <div class="card"><h3>Total Expense</h3><h2 class="red" id="expense">₦0</h2></div>
+  </div>
+  <div class="form">
+    <input type="text" id="desc" placeholder="Description e.g. Sold Rice, Paid Rent">
+    <input type="number" id="amount" placeholder="Amount ₦">
+    <select id="type">
+      <option value="income">Income +</option>
+      <option value="expense">Expense -</option>
+    </select>
+    <input type="date" id="date">
+    <button onclick="addTransaction()">+ Add Transaction</button>
+  </div>
+  <input class="search" type="text" id="search" placeholder="🔍 Search transactions..." onkeyup="render()">
+  <div class="list" id="list"></div>
+</div>
+<div class="footer">Ledger Pulse © 2026 - Built by BabaTicoin</div>
+<script>
+let transactions = JSON.parse(localStorage.getItem('ledger') || '[]');
+function save(){ localStorage.setItem('ledger', JSON.stringify(transactions)); }
+function addTransaction(){
+  const desc = document.getElementById('desc').value;
+  const amount = parseFloat(document.getElementById('amount').value);
+  const type = document.getElementById('type').value;
+  const date = document.getElementById('date').value || new Date().toISOString().split('T')[0];
+  if(!desc || !amount){ alert('Please enter description and amount'); return; }
+  transactions.unshift({desc, amount, type, date, id: Date.now()});
+  save(); render();
+  document.getElementById('desc').value=''; document.getElementById('amount').value='';
+}
+function deleteTx(id){
+  transactions = transactions.filter(t => t.id !== id);
+  save(); render();
+}
+function render(){
+  const q = document.getElementById('search').value.toLowerCase();
+  let income=0, expense=0;
+  transactions.forEach(t=>{ if(t.type==='income') income+=t.amount; else expense+=t.amount; });
+  document.getElementById('balance').textContent = '₦' + (income-expense).toLocaleString();
+  document.getElementById('income').textContent = '₦' + income.toLocaleString();
+  document.getElementById('expense').textContent = '₦' + expense.toLocaleString();
+  const list = document.getElementById('list');
+  list.innerHTML = '';
+  transactions.filter(t=>t.desc.toLowerCase().includes(q)).forEach(t=>{
+    const div = document.createElement('div'); div.className='item';
+    div.innerHTML = `<div><b>${t.desc}</b><small>${t.date} • ${t.type}</small></div><div style="text-align:right"><b class="${t.type==='income'?'green':'red'}">${t.type==='income'?'+':'-'} ₦${t.amount.toLocaleString()}</b><br><button class="del" onclick="deleteTx(${t.id})">Delete</button></div>`;
+    list.appendChild(div);
+  });
+  if(transactions.length===0) list.innerHTML='<p style="text-align:center;color:#94a3b8">No transactions yet. Add your first one above.</p>';
+}
+render();
+</script>
+</body>
+</html>
