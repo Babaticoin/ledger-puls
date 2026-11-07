@@ -3,90 +3,211 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Ledger Pulse - Accounting Software</title>
+<title>Ledger Pulse - Standard Accounting Software</title>
 <style>
-* { box-sizing: border-box; font-family: 'Segoe UI', sans-serif; }
-body { margin:0; background:#0f172a; color:#fff; }
-.header { background:#1e293b; padding:20px; text-align:center; }
-.header h1 { margin:0; font-size:28px; }
-.header p { color:#94a3b8; margin:5px 0 0; }
-.container { max-width:900px; margin:20px auto; padding:0 15px; }
-.cards { display:flex; gap:15px; flex-wrap:wrap; }
-.card { flex:1; min-width:200px; background:#1e293b; padding:20px; border-radius:12px; text-align:center; }
-.card h3 { margin:0; font-size:14px; color:#94a3b8; text-transform:uppercase; }
-.card h2 { margin:10px 0 0; font-size:28px; }
-.green { color:#22c55e; } .red { color:#ef4444; } .blue { color:#38bdf8; }
-.form { background:#1e293b; padding:20px; border-radius:12px; margin-top:20px; display:flex; gap:10px; flex-wrap:wrap; }
-input, select, button { padding:12px; border-radius:8px; border:none; font-size:15px; }
-input, select { flex:1; min-width:140px; background:#0f172a; color:#fff; border:1px solid #334155; outline:none; }
-button { background:#22c55e; color:#fff; font-weight:bold; cursor:pointer; flex:1; min-width:120px; }
-button:hover { background:#16a34a; }
-.list { margin-top:20px; }
-.item { background:#1e293b; padding:15px; border-radius:10px; display:flex; justify-content:space-between; align-items:center; margin-bottom:10px; }
-.item b { display:block; }
-.item small { color:#94a3b8; }
-.del { background:#ef4444; padding:8px 12px; border-radius:6px; cursor:pointer; border:none; color:#fff; }
-.search { width:100%; margin-top:20px; }
-.footer { text-align:center; color:#64748b; padding:20px; font-size:13px; }
+*{box-sizing:border-box;font-family:'Segoe UI',sans-serif}
+body{margin:0;background:#0f172a;color:#fff}
+.hidden{display:none!important}
+.login{position:fixed;inset:0;background:#0f172a;display:flex;align-items:center;justify-content:center;z-index:99;padding:20px}
+.login-box{background:#1e293b;padding:30px;border-radius:16px;width:100%;max-width:380px;text-align:center}
+.login-box h1{margin:0} .login-box p{color:#94a3b8}
+input,select,button{padding:12px;border-radius:8px;border:none;font-size:15px}
+input,select{background:#0f172a;color:#fff;border:1px solid #334155;outline:none;width:100%;margin-bottom:10px}
+button{background:#22c55e;color:#fff;font-weight:bold;cursor:pointer}
+button:hover{background:#16a34a}
+.header{background:#1e293b;padding:18px;text-align:center;position:sticky;top:0;z-index:10}
+.header h1{margin:0;font-size:24px} .header p{color:#94a3b8;margin:3px 0 0;font-size:13px}
+.nav{display:flex;gap:8px;justify-content:center;padding:12px;flex-wrap:wrap;background:#0f172a}
+.nav button{background:#1e293b;color:#cbd5e1} .nav button.active{background:#22c55e;color:#fff}
+.container{max-width:1000px;margin:0 auto;padding:0 15px 40px}
+.cards{display:flex;gap:12px;flex-wrap:wrap;margin-top:15px}
+.card{flex:1;min-width:180px;background:#1e293b;padding:18px;border-radius:12px;text-align:center}
+.card h3{margin:0;font-size:12px;color:#94a3b8;text-transform:uppercase}
+.card h2{margin:8px 0 0;font-size:24px}
+.green{color:#22c55e} .red{color:#ef4444} .blue{color:#38bdf8} .orange{color:#f59e0b}
+.box{background:#1e293b;padding:18px;border-radius:12px;margin-top:15px}
+.row{display:flex;gap:10px;flex-wrap:wrap} .row>*{flex:1;min-width:140px}
+.row input,.row select{margin-bottom:0}
+.item{background:#0f172a;padding:14px;border-radius:10px;display:flex;justify-content:space-between;align-items:center;margin-bottom:10px;gap:10px}
+.item b{display:block} .item small{color:#94a3b8}
+.del{background:#ef4444;padding:7px 12px;border-radius:6px}
+.btn2{background:#38bdf8} .btn3{background:#334155} .btnOrange{background:#f59e0b}
+.chart-wrap{display:flex;align-items:flex-end;gap:15px;height:180px;margin-top:15px;justify-content:center}
+.bar{width:90px;text-align:center} .bar-fill{border-radius:8px 8px 0 0;margin:0 auto;width:100%}
+table{width:100%;border-collapse:collapse;margin-top:10px} th,td{padding:10px;text-align:left;border-bottom:1px solid #334155;font-size:14px}
+.badge{padding:4px 8px;border-radius:20px;font-size:12px;background:#334155}
+.footer{text-align:center;color:#64748b;padding:20px;font-size:13px}
 </style>
 </head>
 <body>
-<div class="header">
-  <h1>💰 Ledger Pulse</h1>
-  <p>Simple Accounting Software for Small Business</p>
+
+<!-- LOGIN -->
+<div id="loginScreen" class="login">
+  <div class="login-box">
+    <h1>💰 Ledger Pulse</h1>
+    <p>Standard Accounting Software<br>Enter password to continue</p>
+    <input type="password" id="passInput" placeholder="Password (default: 1234)">
+    <button style="width:100%" onclick="login()">Unlock 🔓</button>
+    <p style="font-size:12px">To change password, edit the code and change <b>1234</b> in the script.</p>
+  </div>
 </div>
+
+<!-- APP -->
+<div id="app" class="hidden">
+<div class="header"><h1>💰 Ledger Pulse</h1><p>Standard Accounting Software • BabaTicoin</p></div>
+<div class="nav">
+  <button id="tabDashboard" class="active" onclick="showTab('dashboard')">📊 Dashboard</button>
+  <button id="tabTransactions" onclick="showTab('transactions')">💳 Transactions</button>
+  <button id="tabDebtors" onclick="showTab('debtors')">👥 Customers / Debtors</button>
+  <button id="tabReports" onclick="showTab('reports')">📈 Reports</button>
+  <button onclick="exportCSV()" style="background:#38bdf8">⬇ Export Excel</button>
+  <button onclick="logout()" style="background:#ef4444">Logout</button>
+</div>
+
 <div class="container">
-  <div class="cards">
-    <div class="card"><h3>Total Balance</h3><h2 class="blue" id="balance">₦0</h2></div>
-    <div class="card"><h3>Total Income</h3><h2 class="green" id="income">₦0</h2></div>
-    <div class="card"><h3>Total Expense</h3><h2 class="red" id="expense">₦0</h2></div>
+  <!-- DASHBOARD -->
+  <div id="page-dashboard">
+    <div class="cards">
+      <div class="card"><h3>Total Balance</h3><h2 class="blue" id="balance">₦0</h2></div>
+      <div class="card"><h3>Total Income</h3><h2 class="green" id="income">₦0</h2></div>
+      <div class="card"><h3>Total Expense</h3><h2 class="red" id="expense">₦0</h2></div>
+      <div class="card"><h3>People Owing You</h3><h2 class="orange" id="owing">₦0</h2></div>
+    </div>
+    <div class="box"><h3 style="margin:0">📊 Income vs Expense Chart</h3>
+      <div class="chart-wrap">
+        <div class="bar"><div class="bar-fill" id="barIncome" style="background:#22c55e;height:50px"></div><p>Income</p></div>
+        <div class="bar"><div class="bar-fill" id="barExpense" style="background:#ef4444;height:30px"></div><p>Expense</p></div>
+        <div class="bar"><div class="bar-fill" id="barProfit" style="background:#38bdf8;height:20px"></div><p>Profit</p></div>
+      </div>
+    </div>
+    <div class="box"><h3 style="margin:0 0 10px">➕ Quick Add Transaction</h3>
+      <div class="row">
+        <input id="desc" placeholder="Description e.g. Sold Rice">
+        <input type="number" id="amount" placeholder="Amount ₦">
+        <select id="type"><option value="income">Income +</option><option value="expense">Expense -</option></select>
+        <select id="category">
+          <option>Sales</option><option>Salary</option><option>Food</option><option>Rent</option><option>Transport</option><option>Utilities</option><option>Stock / Goods</option><option>Other</option>
+        </select>
+        <input type="date" id="date">
+      </div>
+      <button style="width:100%;margin-top:10px" onclick="addTransaction()">+ Add Transaction</button>
+    </div>
+    <div class="box"><h3 style="margin:0 0 10px">Recent Transactions</h3><div id="recentList"></div></div>
   </div>
-  <div class="form">
-    <input type="text" id="desc" placeholder="Description e.g. Sold Rice, Paid Rent">
-    <input type="number" id="amount" placeholder="Amount ₦">
-    <select id="type">
-      <option value="income">Income +</option>
-      <option value="expense">Expense -</option>
-    </select>
-    <input type="date" id="date">
-    <button onclick="addTransaction()">+ Add Transaction</button>
+
+  <!-- TRANSACTIONS -->
+  <div id="page-transactions" class="hidden">
+    <div class="box">
+      <div class="row">
+        <input id="search" placeholder="🔍 Search..." onkeyup="render()">
+        <select id="filterCat" onchange="render()"><option value="">All Categories</option><option>Sales</option><option>Salary</option><option>Food</option><option>Rent</option><option>Transport</option><option>Utilities</option><option>Stock / Goods</option><option>Other</option></select>
+        <select id="filterType" onchange="render()"><option value="">All Types</option><option value="income">Income Only</option><option value="expense">Expense Only</option></select>
+      </div>
+      <div id="list" style="margin-top:15px"></div>
+    </div>
   </div>
-  <input class="search" type="text" id="search" placeholder="🔍 Search transactions..." onkeyup="render()">
-  <div class="list" id="list"></div>
+
+  <!-- DEBTORS -->
+  <div id="page-debtors" class="hidden">
+    <div class="box"><h3 style="margin:0 0 10px">➕ Add Customer Who Owes You</h3>
+      <div class="row"><input id="debtorName" placeholder="Customer Name"><input type="number" id="debtorAmount" placeholder="Amount Owed ₦"><input id="debtorPhone" placeholder="Phone (optional)"></div>
+      <button style="width:100%;margin-top:10px;background:#f59e0b" onclick="addDebtor()">+ Add Debtor</button>
+    </div>
+    <div class="box"><h3 style="margin:0">👥 Debtors List</h3><div id="debtorList" style="margin-top:10px"></div></div>
+  </div>
+
+  <!-- REPORTS -->
+  <div id="page-reports" class="hidden">
+    <div class="box"><h3 style="margin:0">📅 This Month Report</h3>
+      <p id="monthTitle"></p>
+      <table><tr><th>Category</th><th>Type</th><th>Amount</th></tr><tbody id="monthTable"></tbody></table>
+      <div class="cards"><div class="card"><h3>Month Income</h3><h2 class="green" id="mIncome">₦0</h2></div><div class="card"><h3>Month Expense</h3><h2 class="red" id="mExpense">₦0</h2></div><div class="card"><h3>Month Profit</h3><h2 class="blue" id="mProfit">₦0</h2></div></div>
+    </div>
+    <div class="box"><h3 style="margin:0 0 10px">📋 Category Breakdown</h3><div id="catBreakdown"></div></div>
+  </div>
 </div>
-<div class="footer">Ledger Pulse © 2026 - Built by BabaTicoin</div>
+<div class="footer">Ledger Pulse © 2026 • Standard Accounting Software</div>
+</div>
+
 <script>
-let transactions = JSON.parse(localStorage.getItem('ledger') || '[]');
-function save(){ localStorage.setItem('ledger', JSON.stringify(transactions)); }
-function addTransaction(){
-  const desc = document.getElementById('desc').value;
-  const amount = parseFloat(document.getElementById('amount').value);
-  const type = document.getElementById('type').value;
-  const date = document.getElementById('date').value || new Date().toISOString().split('T')[0];
-  if(!desc || !amount){ alert('Please enter description and amount'); return; }
-  transactions.unshift({desc, amount, type, date, id: Date.now()});
-  save(); render();
-  document.getElementById('desc').value=''; document.getElementById('amount').value='';
+const PASSWORD = "1234"; // <-- CHANGE YOUR PASSWORD HERE
+let transactions = JSON.parse(localStorage.getItem('ledger_v2') || '[]');
+let debtors = JSON.parse(localStorage.getItem('debtors_v2') || '[]');
+function save(){ localStorage.setItem('ledger_v2', JSON.stringify(transactions)); localStorage.setItem('debtors_v2', JSON.stringify(debtors)); }
+function login(){
+  if(document.getElementById('passInput').value === PASSWORD){
+    document.getElementById('loginScreen').classList.add('hidden');
+    document.getElementById('app').classList.remove('hidden');
+    sessionStorage.setItem('logged','1'); render();
+  } else alert('Wrong password! Default is 1234');
 }
-function deleteTx(id){
-  transactions = transactions.filter(t => t.id !== id);
-  save(); render();
+function logout(){ sessionStorage.removeItem('logged'); location.reload(); }
+if(sessionStorage.getItem('logged')==='1'){ document.getElementById('loginScreen').classList.add('hidden'); document.getElementById('app').classList.remove('hidden'); }
+function showTab(name){
+  ['dashboard','transactions','debtors','reports'].forEach(t=>{
+    document.getElementById('page-'+t).classList.toggle('hidden', t!==name);
+    document.getElementById('tab'+t.charAt(0).toUpperCase()+t.slice(1)).classList.toggle('active', t===name);
+  }); render();
+}
+function addTransaction(){
+  const desc=document.getElementById('desc').value, amount=parseFloat(document.getElementById('amount').value);
+  const type=document.getElementById('type').value, category=document.getElementById('category').value;
+  const date=document.getElementById('date').value || new Date().toISOString().split('T')[0];
+  if(!desc||!amount){ alert('Enter description and amount'); return; }
+  transactions.unshift({desc,amount,type,category,date,id:Date.now()}); save(); render();
+  document.getElementById('desc').value=''; document.getElementById('amount').value=''; alert('Saved!');
+}
+function deleteTx(id){ if(confirm('Delete this?')){ transactions=transactions.filter(t=>t.id!==id); save(); render(); } }
+function addDebtor(){
+  const name=document.getElementById('debtorName').value, amount=parseFloat(document.getElementById('debtorAmount').value), phone=document.getElementById('debtorPhone').value;
+  if(!name||!amount){ alert('Enter name and amount'); return; }
+  debtors.unshift({name,amount,phone,id:Date.now(),paid:false}); save(); render();
+  document.getElementById('debtorName').value=''; document.getElementById('debtorAmount').value=''; document.getElementById('debtorPhone').value='';
+}
+function togglePaid(id){ const d=debtors.find(x=>x.id===id); d.paid=!d.paid; save(); render(); }
+function deleteDebtor(id){ debtors=debtors.filter(d=>d.id!==id); save(); render(); }
+function exportCSV(){
+  let csv="Date,Description,Category,Type,Amount\n";
+  transactions.forEach(t=>{ csv+=`${t.date},"${t.desc}",${t.category},${t.type},${t.amount}\n`; });
+  const blob=new Blob([csv],{type:'text/csv'}); const a=document.createElement('a'); a.href=URL.createObjectURL(blob); a.download='ledger-pulse.csv'; a.click();
 }
 function render(){
-  const q = document.getElementById('search').value.toLowerCase();
-  let income=0, expense=0;
-  transactions.forEach(t=>{ if(t.type==='income') income+=t.amount; else expense+=t.amount; });
-  document.getElementById('balance').textContent = '₦' + (income-expense).toLocaleString();
-  document.getElementById('income').textContent = '₦' + income.toLocaleString();
-  document.getElementById('expense').textContent = '₦' + expense.toLocaleString();
-  const list = document.getElementById('list');
-  list.innerHTML = '';
-  transactions.filter(t=>t.desc.toLowerCase().includes(q)).forEach(t=>{
-    const div = document.createElement('div'); div.className='item';
-    div.innerHTML = `<div><b>${t.desc}</b><small>${t.date} • ${t.type}</small></div><div style="text-align:right"><b class="${t.type==='income'?'green':'red'}">${t.type==='income'?'+':'-'} ₦${t.amount.toLocaleString()}</b><br><button class="del" onclick="deleteTx(${t.id})">Delete</button></div>`;
-    list.appendChild(div);
+  let income=0, expense=0; transactions.forEach(t=>{ if(t.type==='income') income+=t.amount; else expense+=t.amount; });
+  const owing = debtors.filter(d=>!d.paid).reduce((s,d)=>s+d.amount,0);
+  document.getElementById('balance').textContent='₦'+(income-expense).toLocaleString();
+  document.getElementById('income').textContent='₦'+income.toLocaleString();
+  document.getElementById('expense').textContent='₦'+expense.toLocaleString();
+  document.getElementById('owing').textContent='₦'+owing.toLocaleString();
+  const max=Math.max(income,expense,Math.abs(income-expense),1);
+  document.getElementById('barIncome').style.height=(income/max*150+10)+'px';
+  document.getElementById('barExpense').style.height=(expense/max*150+10)+'px';
+  document.getElementById('barProfit').style.height=(Math.max(income-expense,0)/max*150+10)+'px';
+  // recent
+  const recent=document.getElementById('recentList'); recent.innerHTML='';
+  transactions.slice(0,5).forEach(t=>{ recent.innerHTML+=`<div class="item"><div><b>${t.desc}</b><small>${t.date} • ${t.category}</small></div><b class="${t.type==='income'?'green':'red'}">${t.type==='income'?'+':'-'} ₦${t.amount.toLocaleString()}</b></div>`; });
+  if(transactions.length===0) recent.innerHTML='<p style="color:#94a3b8">No transactions yet.</p>';
+  // full list with filters
+  const q=(document.getElementById('search')?.value||'').toLowerCase(), fc=document.getElementById('filterCat')?.value||'', ft=document.getElementById('filterType')?.value||'';
+  const list=document.getElementById('list'); list.innerHTML='';
+  transactions.filter(t=>t.desc.toLowerCase().includes(q)&&(!fc||t.category===fc)&&(!ft||t.type===ft)).forEach(t=>{
+    list.innerHTML+=`<div class="item"><div><b>${t.desc}</b><small>${t.date} • ${t.category} • <span class="badge">${t.type}</span></small></div><div style="text-align:right"><b class="${t.type==='income'?'green':'red'}">${t.type==='income'?'+':'-'} ₦${t.amount.toLocaleString()}</b><br><button class="del" onclick="deleteTx(${t.id})">Delete</button></div></div>`;
   });
-  if(transactions.length===0) list.innerHTML='<p style="text-align:center;color:#94a3b8">No transactions yet. Add your first one above.</p>';
+  // debtors
+  const dl=document.getElementById('debtorList'); dl.innerHTML='';
+  debtors.forEach(d=>{ dl.innerHTML+=`<div class="item"><div><b>${d.name} ${d.paid?'✅ Paid':''}</b><small>${d.phone||''} • ${d.paid?'Paid':'Owing'}</small></div><div style="text-align:right"><b class="orange">₦${d.amount.toLocaleString()}</b><br><button class="${d.paid?'btn3':'btnOrange'}" onclick="togglePaid(${d.id})">${d.paid?'Undo':'Mark Paid'}</button> <button class="del" onclick="deleteDebtor(${d.id})">X</button></div></div>`; });
+  if(debtors.length===0) dl.innerHTML='<p style="color:#94a3b8">No debtors yet.</p>';
+  // month report
+  const now=new Date(), ym=now.toISOString().slice(0,7);
+  const monthTx=transactions.filter(t=>t.date.startsWith(ym));
+  let mi=0, me=0; const mt=document.getElementById('monthTable'); mt.innerHTML='';
+  monthTx.forEach(t=>{ if(t.type==='income') mi+=t.amount; else me+=t.amount; mt.innerHTML+=`<tr><td>${t.category}</td><td>${t.type}</td><td>₦${t.amount.toLocaleString()}</td></tr>`; });
+  document.getElementById('monthTitle').textContent='Month: '+now.toLocaleString('default',{month:'long',year:'numeric'})+' • '+monthTx.length+' transactions';
+  document.getElementById('mIncome').textContent='₦'+mi.toLocaleString();
+  document.getElementById('mExpense').textContent='₦'+me.toLocaleString();
+  document.getElementById('mProfit').textContent='₦'+(mi-me).toLocaleString();
+  const cats={}; transactions.forEach(t=>{ cats[t.category]=(cats[t.category]||0)+(t.type==='income'?t.amount:-t.amount); });
+  const cb=document.getElementById('catBreakdown'); cb.innerHTML='';
+  Object.entries(cats).forEach(([k,v])=>{ cb.innerHTML+=`<div class="item"><b>${k}</b><b class="${v>=0?'green':'red'}">₦${v.toLocaleString()}</b></div>`; });
 }
 render();
 </script>
